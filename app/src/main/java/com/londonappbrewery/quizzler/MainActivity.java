@@ -10,13 +10,14 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.os.Handler;
 
 import org.w3c.dom.Text;
 
 public class MainActivity extends Activity {
 
 
-    // TODO: Declare member variables here:
+    // member variables
      Button mTrueButton;
      Button mFalseButton;
      TextView mScoreTextView;
@@ -25,7 +26,8 @@ public class MainActivity extends Activity {
      int mScore;
      int mIndex;
      int mQuestion;
-    // TODO: Uncomment to create question bank
+
+    // question bank
     private TrueFalse[] mQuestionBank = new TrueFalse[] {
             new TrueFalse(R.string.question_1, true),
             new TrueFalse(R.string.question_2, true),
@@ -42,7 +44,7 @@ public class MainActivity extends Activity {
             new TrueFalse(R.string.question_13,true)
     };
 
-    // TODO: Declare constants here
+    //constants
     final int PROGRESS_BAR_INCREMENT = (int) Math.ceil(100.0 / mQuestionBank.length);
 
     @Override
@@ -64,13 +66,14 @@ public class MainActivity extends Activity {
         mScoreTextView = (TextView) findViewById(R.id.score);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-     //   TrueFalse firstQuestion = mQuestionBank[mIndex];
+     // TrueFalse firstQuestion = mQuestionBank[mIndex];
         int mQuestion  = mQuestionBank[mIndex].getQuestionID();
         mQuestionTextView.setText(mQuestion);
 
         mScoreTextView.setText("Score " + mScore + "/" + mQuestionBank.length);
     //  mQuestionTextView.setText(mQuestionBank[mIndex].getQuestionID());
-     // 3 in 1
+    // 3 in 1
+
         View.OnClickListener myListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,7 +84,6 @@ public class MainActivity extends Activity {
                 updateQuestion();
             }
         };
-
         mTrueButton.setOnClickListener(myListener);
 
         mFalseButton.setOnClickListener(new View.OnClickListener() {
@@ -121,10 +123,12 @@ public class MainActivity extends Activity {
     private void checkAnswer(boolean userSelection) {
         boolean correctAnswer = mQuestionBank[mIndex].isAnswer();
         if(userSelection == correctAnswer) {
-            Toast.makeText(getApplicationContext(),R.string.correct_toast,Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(),R.string.correct_toast,Toast.LENGTH_SHORT).show();
+            showToastMessage("You got it!",500);
             mScore = mScore + 1;
         } else {
-            Toast.makeText(getApplicationContext(),R.string.incorrect_toast,Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(),R.string.incorrect_toast,Toast.LENGTH_SHORT).show();
+            showToastMessage("Wrong!",500);
         }
     }
 
@@ -134,5 +138,17 @@ public class MainActivity extends Activity {
 
         outState.putInt("ScoreKey", mScore);
         outState.putInt("IndexKey", mIndex);
+    }
+
+    public void showToastMessage(String text, int duration){
+        final Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+        toast.show();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                toast.cancel();
+            }
+        }, duration);
     }
 }
